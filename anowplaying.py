@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 #-*- coding: utf-8 -*-
 #
 # anowplaying.py
@@ -16,7 +16,7 @@ class Nowplaying():
             all the information about the currently playing track 
         '''
         bus = dbus.SessionBus()
-        amarok = bus.get_object('org.kde.amarok', '/Player')
+        amarok = bus.get_object('org.mpris.clementine', '/Player')
         amarokdict = amarok.GetMetadata()
         cpos=amarok.PositionGet()/1000
         self.artist = self.title = self.album = self.genre = self.year = \
