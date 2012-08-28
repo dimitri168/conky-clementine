@@ -1,10 +1,15 @@
 conkyconfig
 ===========
 
-My simple conky configuration. Very simple design, which works best on dark
-backgrounds. The script uses a python script to fetch the currently playing
-track in amarok (my favourite Music Player).
+ simple python script to fetch current playing track information from clementine ,can be easily
+ modified to cater any player with a dbus interface
 
-	- anowplaying.py (fetch currently playing track in amarok via dbus)
+ +artist
+ +album
+ +cover
+ +progress
+###Included Files
 
+anowplaying.py (fetch currently playing track in amarok via dbus)
+conkyrc(simple conky rc with clementine now playing and usual stuff)
 
