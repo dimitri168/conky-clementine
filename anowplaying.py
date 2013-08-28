@@ -23,29 +23,39 @@ class Nowplaying():
         self.etime = self.ttime = self.rtime = self.progress=\
         self.track = self.bitrate = self.sample = self.cover = ""
         if amarokdict :
-            self.artist  = amarokdict['artist']
-            self.title   = amarokdict['title']
-            self.album   = amarokdict['album']
-            self.genre   = amarokdict['genre']
-            self.year    = amarokdict['year']
-            self.track   = amarokdict['tracknumber']
-            self.bitrate = amarokdict['audio-bitrate']
-            self.sample  = amarokdict['audio-samplerate']
-            self.cover   = amarokdict['arturl']
-            mt           = amarokdict['mtime']/1000
-            self.mtime   = str(mt/60)+":"+str(mt%60) if mt%60>9 else str(mt/60)+":0"+str(mt%60)
-            self.etime   = str(cpos/60)+":"+str(cpos%60) if cpos%60>9 else  str(cpos/60)+":0"+str(cpos%60)
-            self.rtime   = str((mt-cpos)/60)+":"+str((mt-cpos)%60) if (mt-cpos)%60>9 else str((mt-cpos)/60)+":0"+str((mt-cpos)%60)
-            self.progress= float(cpos)/float(mt)*100
+            if amarokdict.has_key('artist') :
+                self.artist  = amarokdict['artist']
+            if amarokdict.has_key('title') : 
+                self.title   = amarokdict['title']
+            if amarokdict.has_key('album') :
+                self.album   = amarokdict['album']
+            if amarokdict.has_key('genre') :            
+                self.genre   = amarokdict['genre']
+            if amarokdict.has_key('year') :            
+                self.year    = amarokdict['year']
+            if amarokdict.has_key('tracknumber') :
+                self.track   = amarokdict['tracknumber']
+            if amarokdict.has_key('audio-bitrate') :
+                self.bitrate = amarokdict['audio-bitrate']
+            if amarokdict.has_key('audio-samplerate') :
+                self.sample  = amarokdict['audio-samplerate']
+            if amarokdict.has_key('arturl') :
+                self.cover   = amarokdict['arturl']
+            if amarokdict.has_key('mtime') :
+                mt           = amarokdict['mtime']/1000
+                self.mtime   = str(mt/60)+":"+str(mt%60) if mt%60>9 else str(mt/60)+":0"+str(mt%60)
+                self.etime   = str(cpos/60)+":"+str(cpos%60) if cpos%60>9 else  str(cpos/60)+":0"+str(cpos%60)
+                self.rtime   = str((mt-cpos)/60)+":"+str((mt-cpos)%60) if (mt-cpos)%60>9 else str((mt-cpos)/60)+":0"+str((mt-cpos)%60)
+                self.progress= float(cpos)/float(mt)*100
  
     def getArtist(self):
-        return self.artist
+        return self.artist.encode('utf-8')
     def getTitle(self):
-        return self.title
+        return self.title.encode('utf-8')
     def getAlbum(self):
-        return self.album
+        return self.album.encode('utf-8')
     def getGenre(self):
-        return self.genre
+        return self.genre.encode('utf-8')
     def getYear(self):
         return self.year
     def getTrack(self):
