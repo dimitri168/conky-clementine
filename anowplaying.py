@@ -8,82 +8,19 @@
 #  playing track in amarok.
 #
 
-import dbus, optparse, shutil
+import dbus, optparse, shutil, commands
 
-class Nowplaying():
-    def __init__(self):
-        ''' Connect to dbus and retrieve the amarok dictionary containg
-            all the information about the currently playing track 
-        '''
-        bus = dbus.SessionBus()
-        amarok = bus.get_object('org.mpris.clementine', '/Player')
-        amarokdict = amarok.GetMetadata()
-        cpos=amarok.PositionGet()/1000
-        self.artist = self.title = self.album = self.genre = self.year = \
-        self.etime = self.ttime = self.rtime = self.progress=\
-        self.track = self.bitrate = self.sample = self.cover = ""
-        if amarokdict :
-            if amarokdict.has_key('artist') :
-                self.artist  = amarokdict['artist']
-            if amarokdict.has_key('title') : 
-                self.title   = amarokdict['title']
-            if amarokdict.has_key('album') :
-                self.album   = amarokdict['album']
-            if amarokdict.has_key('genre') :            
-                self.genre   = amarokdict['genre']
-            if amarokdict.has_key('year') :            
-                self.year    = amarokdict['year']
-            if amarokdict.has_key('tracknumber') :
-                self.track   = amarokdict['tracknumber']
-            if amarokdict.has_key('audio-bitrate') :
-                self.bitrate = amarokdict['audio-bitrate']
-            if amarokdict.has_key('audio-samplerate') :
-                self.sample  = amarokdict['audio-samplerate']
-            if amarokdict.has_key('arturl') :
-                self.cover   = amarokdict['arturl']
-            if amarokdict.has_key('mtime') :
-                mt           = amarokdict['mtime']/1000
-                self.mtime   = str(mt/60)+":"+str(mt%60) if mt%60>9 else str(mt/60)+":0"+str(mt%60)
-                self.etime   = str(cpos/60)+":"+str(cpos%60) if cpos%60>9 else  str(cpos/60)+":0"+str(cpos%60)
-                self.rtime   = str((mt-cpos)/60)+":"+str((mt-cpos)%60) if (mt-cpos)%60>9 else str((mt-cpos)/60)+":0"+str((mt-cpos)%60)
-                self.progress= float(cpos)/float(mt)*100
- 
-    def getArtist(self):
-        return self.artist.encode('utf-8')
-    def getTitle(self):
-        return self.title.encode('utf-8')
-    def getAlbum(self):
-        return self.album.encode('utf-8')
-    def getGenre(self):
-        return self.genre.encode('utf-8')
-    def getYear(self):
-        return self.year
-    def getTrack(self):
-        return self.track
-    def getBitrate(self):
-        return self.bitrate
-    def getSample(self):
-        return self.sample
-    def getMtime(self):
-        return self.mtime
-    def getRtime(self):
-        return self.rtime
-    def getEtime(self):
-        return self.etime
-    def getProgress(self):
-        return self.progress
-    def getCover(self, destination):
-        ''' Copy amaroks cache cover art to a static location so it can be used in conky'''
-        if self.cover != "" :
-            try :
-                shutil.copyfile(self.cover.replace('file://', ''), destination)
-                return ""
-            except Exception, e:
-                print e
-                return ""
-        else :
-            return ""
 if __name__ == '__main__':
+    '''Check if clementine is running'''
+    output = commands.getoutput('ps -A')
+    if 'clementine' not in output:
+        raise SystemExit
+
+    '''Get system bus'''
+    bus = dbus.SessionBus()
+    amarok = bus.get_object('org.mpris.clementine', '/Player')
+    amarokdict = amarok.GetMetadata()
+
     '''Set up the command line parser'''
     usage = 'usage: %prog [options]'
     parser = optparse.OptionParser(usage=usage)
@@ -101,33 +38,52 @@ if __name__ == '__main__':
     parser.add_option('-s',  '--sample',  action='store_true', help='sample rate of the track')
     parser.add_option('-c',  '--cover',   metavar='filename',  help='copy cover art to destination file')
     
-    '''Get the parser options passed to the program'''
+    '''Get the parser options printed'''
     (opts, args) = parser.parse_args()
-    now = Nowplaying()
-    if opts.artist :
-        print now.getArtist()
-    if opts.title :
-        print now.getTitle()
-    if opts.album :
-        print now.getAlbum()
-    if opts.genre :
-        print now.getGenre()
-    if opts.year :
-        print now.getYear()
-    if opts.track :
-        print now.getTrack()
-    if opts.bitrate :
-        print now.getBitrate()
+    if opts.artist and amarokdict.has_key('artist') :
+        print amarokdict['artist']
+    if opts.title and amarokdict.has_key('title'):
+        print amarokdict['title']
+    if opts.album and amarokdict.has_key('album'):
+        print amarokdict['album']
+    if opts.genre and amarokdict.has_key('genre'):
+        print amarokdict['genre']
+    if opts.year and amarokdict.has_key('year'):
+        print amarokdict['year']
+    if opts.track and amarokdict.has_key('tracknumber'):
+        print amarokdict['tracknumber']
+    if opts.bitrate and amarokdict.has_key('audio-bitrate'):
+        print amarokdict['audio-bitrate']
     if opts.sample :
-        print now.getSample()
-    if opts.etime :
-        print now.getEtime()
-    if opts.rtime :
-        print now.getRtime()
-    if opts.mtime :
-        print now.getMtime()
-    if opts.progress:
-        print now.getProgress()
+        print amarokdict['audio-samplerate']
+
+    ''''Manage time stuff''''
+    cpos = mt = mtime = etime = rtime = progress = None
+    if (opts.etime or opts.rtime or opts.mtime or opts.progress) and amarokdict.has_key('mtime'):
+        cpos    = amarok.PositionGet()/1000
+        mt      = amarokdict['mtime']/1000
+        mtime   = str(mt/60)+":"+str(mt%60) if mt%60>9 else str(mt/60)+":0"+str(mt%60)
+        etime   = str(cpos/60)+":"+str(cpos%60) if cpos%60>9 else  str(cpos/60)+":0"+str(cpos%60)
+        rtime   = str((mt-cpos)/60)+":"+str((mt-cpos)%60) if (mt-cpos)%60>9 else str((mt-cpos)/60)+":0"+str((mt-cpos)%60)
+        progress= float(cpos)/float(mt)*100
+    if opts.etime and etime is not None:
+        print etime
+    if opts.rtime and rtime is not None:
+        print rtime
+    if opts.mtime and mtime is not None:
+        print mtime
+    if opts.progress and progress is not None:
+        print progress
+
     if opts.cover :
-        print now.getCover(opts.cover)
+        cover = amarokdict['arturl']
+        if cover != "" :
+            try :
+                shutil.copyfile(cover.replace('file://', ''), opts.cover)
+                print ""
+            except Exception, e:
+                print e
+                print ""
+        else :
+            print ""
     
