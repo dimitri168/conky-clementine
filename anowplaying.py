@@ -57,7 +57,7 @@ if __name__ == '__main__':
     if opts.sample :
         print amarokdict['audio-samplerate']
 
-    ''''Manage time stuff''''
+    '''Manage time stuff'''
     cpos = mt = mtime = etime = rtime = progress = None
     if (opts.etime or opts.rtime or opts.mtime or opts.progress) and amarokdict.has_key('mtime'):
         cpos    = amarok.PositionGet()/1000
