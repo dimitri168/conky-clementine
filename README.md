@@ -1,6 +1,6 @@
 conkyconfig
 ===========
-Inspired by diadara/conky-clementive
+Inspired by diadara/conky-clementine
 
  simple python script to fetch current playing track information from clementine ,can be easily
  modified to cater any player with a dbus interface. Python3, dbus/mpris used.
