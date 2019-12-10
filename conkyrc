@@ -28,8 +28,8 @@ conky.config = {
 	border_inner_margin = 0,
 	border_outer_margin = 0,
 
-	minimum_width = 302, minimum_height = 100,
-	maximum_width = 302,
+	minimum_width = 250, minimum_height = 400,
+	maximum_width = 250,
 
 	alignment = 'top_right',
 	gap_y = 0,
@@ -67,9 +67,9 @@ conky.config = {
 conky.text = [[
 #MP3 INFO
 ${voffset -7}
-${font Play:bold:size=11}${color1}NOW PLAYING  ${voffset 4}${color4}${execibar 5 2 python3 .conky/anowplaying.py -e}
-${voffset -4}${font Play:size=9}${color2}Artist ${goto 50}: ${color0}${execi 5 python3 .conky/anowplaying.py -a}
-${execi 5 python3 .conky/anowplaying.py -c /tmp/cover.jpg}${image /tmp/cover.jpg -p 236,671 -s 65x65 -n}
+${font Play:bold:size=11}${color1}NOW PLAYING  ${voffset 2}${color4}${execibar 5 8 python3 .conky/anowplaying.py -e}
+${voffset -4}${font Play:size=10}${color2}Artist ${goto 50}: ${color0}${execi 5 python3 .conky/anowplaying.py -a}
+${execi 5 python3 .conky/anowplaying.py -c /tmp/cover.jpg}${image /tmp/cover.jpg -p 0,100 -s 250x250 -n}
 ${voffset -15}${color2}Title ${goto 50}: ${color0}${execi 5 python3 .conky/anowplaying.py -t}
 ${color2}Album ${goto 50}: ${color0}${execi 5 python3 .conky/anowplaying.py -l}
 ${color2}Year ${goto 50}: ${color0}${execi 5 python3 .conky/anowplaying.py -y} \
