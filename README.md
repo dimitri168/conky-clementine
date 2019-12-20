@@ -13,5 +13,4 @@ Inspired by diadara/conky-clementine
 
 anowplaying.py (fetch currently playing track in clementine via dbus/mpris)
 conkyrc(simple conky rc with clementine now playing and usual stuff)
-
-
+needs to install python-dbus.
